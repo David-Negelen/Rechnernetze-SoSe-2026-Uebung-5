@@ -1,1 +1,56 @@
-Hier könnten Ihre Lösungen stehen...
+Rechnernetze - Übungsblatt 5
+
+Aufgabe 2
+
+ssh-copy-id -i ~/.ssh/id_ed25519.pub s4danege@2026s.ag-syssoft.org
+
+Danach war Login ohne Passwort möglich.
+
+Warum sicherer?
+Der private Schlüssel verlässt das lokale Gerät nie.
+Der Server prüft per Challenge-Response, ob der Absender den passenden Schlüssel hat.
+Ein Passwort kann dagegen durch Brute-Force oder Phishing kompromittiert werden.
+
+
+Aufgabe 3
+
+a) mkdir ~/1 ~/2
+
+b)
+echo "Hallo" > ~/test.txt
+scp ~/test.txt s4danege@2026s.ag-syssoft.org:~/1/
+
+c)
+echo '#!/bin/bash' > ~/2/script.sh
+echo 'echo "Hallo Welt"' >> ~/2/script.sh
+./2/script.sh
+-> -bash: ./2/script.sh: Permission denied
+
+Das Script hat keine Ausführungsberechtigung.
+
+d) chmod 751 ~/2/script.sh
+ls -l ~/2/script.sh
+-> -rwxr-x--x 1 s4danege s4danege 30 Jun 24 14:12 /home/s4danege/2/script.sh
+./2/script.sh
+-> Hallo Welt
+
+-rwxr-x--x: Besitzer rwx, Gruppe r-x, Andere --x
+
+
+Aufgabe 4
+
+Auf dem Server:
+wget -O ~/FPO2020.pdf http://ordnungen.uni-trier.de/FPO_BSc_1F-HF-NF_Informatik_2020-07-27.pdf
+
+wget hat der HTTP-301-Weiterleitung automatisch gefolgt und Datei als FPO2020.pdf gespeichert.
+
+
+Aufgabe 5
+
+ssh -L 8080:localhost:3000 s4danege@2026s.ag-syssoft.org
+
+Danach war http://localhost:8080 im Browser erreichbar
+Datenfluss: Der Browser schickt die Anfrage an Port 8080 lokal
+-> SSH-Client leitet sie verschlüsselt an den Server weiter ->
+Server verbindet sich intern mit Port 3000 -> Antwort kommt auf demselben Weg zurück.
+Der Webserver ist von außen nicht direkt erreichbar, der Tunnel ermöglicht den Zugriff trotzdem.
